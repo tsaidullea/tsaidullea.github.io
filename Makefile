@@ -1,22 +1,21 @@
 BUILD ?= ../BUILD
-HTMLS ?= $(shell find . -name \*.html)
+DEST ?= huilehua:/home/public
 
-default: rewrite-links deploy
-
-rewrite-links:
-	echo $(HTMLS) |xargs -n 1 sed -i .BAK 's|img src="\(../\)*graphics/|img src="http://huilehua1.appspot.com/graphics/|g'
+default: deploy
 
 clean:
 	git checkout -- $(HTMLS)
 	rm -fr $(BUILD)
 
 
-DEST ?= $(BUILD)
-#DEST ?= server:/doc/root
-
 .PHONY: RSYNC_FILES.txt
 RSYNC_FILES.txt:
 	find -E . -iregex '.*\.(css|html|jpg|png)' >$@
 
-deploy: RSYNC_FILES.txt
-	rsync -avP ./ --delete --files-from=$< $(DEST)/
+stage: RSYNC_FILES.txt
+	rm -fr $(BUILD)
+	rsync -avP ./ --delete --files-from=$< $(BUILD)/
+	echo $$(find $(BUILD) -name \*.html) |xargs -n 1 sed -i .BAK 's|img src="\(../\)*graphics/|img src="http://huilehua1.appspot.com/graphics/|g'
+
+deploy: stage
+	rsync -avP --delete --exclude \*.BAK $(BUILD)/ $(DEST)/
