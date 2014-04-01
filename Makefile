@@ -10,7 +10,7 @@ clean:
 
 .PHONY: RSYNC_FILES.txt
 RSYNC_FILES.txt:
-	find -E . -iregex '.*\.(css|html|jpg|png)' >$@
+	find -E . -iregex '.*\.(css|html|jpg|ico|png)' >$@
 
 stage: RSYNC_FILES.txt
 	rm -fr $(BUILD)
