@@ -1,0 +1,5 @@
+AuthUserFile /f5/huilehua/protected/private-htdigest
+AuthName "huilehua"
+AuthType Digest
+
+require valid-user
